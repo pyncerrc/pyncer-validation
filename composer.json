@@ -1,0 +1,21 @@
+{
+    "name": "pyncer/validation",
+    "type": "library",
+    "description": "Pyncer library for validating data and values.",
+    "homepage": "https://pyncer.com/validation",
+    "license": "Unlicense",
+    "require": {
+        "php": ">=8.1",
+        "pyncer/core": "*",
+        "pyncer/exception": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pyncer\\Validation\\": "src/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/pyncerrc/pyncer-validation/issues",
+        "source": "https://github.com/pyncerrc/pyncer-validation"
+    }
+}
