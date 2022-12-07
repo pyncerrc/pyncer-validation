@@ -4,7 +4,7 @@ namespace Pyncer\Validation\Rule;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\RuleInterface;
 
-use function strlen;
+use function Pyncer\String\len as pyncer_str_len;
 use function strval;
 
 class LengthRule implements RuleInterface
@@ -31,7 +31,7 @@ class LengthRule implements RuleInterface
             return true;
         }
 
-        return (strlen($value) !== $this->length);
+        return (pyncer_str_len($value) !== $this->length);
     }
     public function clean($value)
     {
