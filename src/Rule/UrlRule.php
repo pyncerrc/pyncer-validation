@@ -4,39 +4,41 @@ namespace Pyncer\Validation\Rule;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\RuleInterface;
 
-use function Pyncer\String\len as pyncer_str_len;
-use function strval;
+use function Pyncer\nullify as pyncer_nullify;
 
-class MaxLengthRule implements RuleInterface
+class UrlRule implements RuleInterface
 {
-    private $length;
-
-    public function __construct(int $length)
-    {
-        $this->length = $length;
-    }
     public function defend(mixed $value): mixed
     {
         if (!$this->isValid($value)) {
-            throw new InvalidArgumentException('Invalid string length specified.');
+            throw new InvalidArgumentException('Empty value specified.');
         }
 
         return $this->clean($value);
     }
+
     public function isValid(mixed $value): bool
     {
-        $value = strval($value);
-
-        if ($value === '') {
+        if ($value === null || $value === '') {
             return true;
         }
 
-        return (pyncer_str_len($value) >= $this->length);
+        if (filter_var($value, FILTER_VALIDATE_URL) !== false) {
+            return true;
+        }
+
+        return false;
     }
+
     public function clean(mixed $value): mixed
     {
+        if ($value === null) {
+            return null;
+        }
+
         return strval($value);
     }
+
     public function getError(): ?string
     {
         return 'invalid';

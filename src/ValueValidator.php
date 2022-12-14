@@ -5,22 +5,22 @@ use Pyncer\Validation\Rule\RuleInterface;
 
 class ValueValidator
 {
-    protected array $rules;
+    protected array $rules = [];
 
     public function __construct()
-    {
-        $this->rules = [];
-    }
+    {}
 
-    public function AddRules(RuleInterface ...$rules): static
+    public function addRules(RuleInterface ...$rules): static
     {
         $this->rules = array_merge($this->rules, $rules);
         return $this;
     }
+
     public function hasRules(): bool
     {
         return (count($this->rules) > 0);
     }
+
     public function clearRules(): static
     {
         $this->rules = [];
@@ -35,6 +35,7 @@ class ValueValidator
 
         return $value;
     }
+
     public function isValid(mixed $value): bool
     {
         foreach ($this->rules as $rule) {
@@ -47,6 +48,7 @@ class ValueValidator
 
         return true;
     }
+
     public function clean(mixed $value): mixed
     {
         foreach ($this->rules as $rule) {
@@ -55,6 +57,7 @@ class ValueValidator
 
         return $value;
     }
+
     public function getError(mixed $value): ?string
     {
         foreach ($this->rules as $rule) {

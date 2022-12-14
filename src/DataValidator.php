@@ -2,7 +2,7 @@
 namespace Pyncer\Validation;
 
 use Pyncer\Validation\Rule\RuleInterface;
-use Traversable
+use Traversable;
 
 use function array_merge;
 use function array_key_exists;
@@ -11,19 +11,17 @@ use function Pyncer\Array\ensure_array as pyncer_ensure_array;
 
 class DataValidator
 {
-    protected $rules;
+    protected array $rules = [];
 
     public function __construct()
-    {
-        $this->rules = [];
-    }
+    {}
 
-    public function AddRules(string|iterable $key, RuleInterface ...$rules): static
+    public function addRules(string|iterable $key, RuleInterface ...$rules): static
     {
         if ($key instanceof \Traversable) {
             $key = iterator_to_array($key, true);
         } else {
-            $keys = pyncer_ensure_array($key,  [null, '', false]);
+            $keys = pyncer_ensure_array($key, ['']);
         }
 
         foreach ($keys as $key) {
@@ -36,6 +34,7 @@ class DataValidator
 
         return $this;
     }
+
     public function deleteRules(string ...$keys): static
     {
         foreach ($keys as $key) {
@@ -44,6 +43,7 @@ class DataValidator
 
         return $this;
     }
+
     public function hasRules(string ...$keys): bool
     {
         foreach ($keys as $key) {
@@ -54,6 +54,7 @@ class DataValidator
 
         return true;
     }
+
     public function clearRules(): static
     {
         $this->rules = [];
@@ -81,6 +82,7 @@ class DataValidator
 
         return $data;
     }
+
     public function isValid(iterable $data): bool
     {
         if ($data instanceof Traversable) {
@@ -103,6 +105,7 @@ class DataValidator
 
         return true;
     }
+
     public function clean(iterable $data): iterable
     {
         if ($data instanceof Traversable) {
@@ -123,6 +126,7 @@ class DataValidator
 
         return $data;
     }
+
     public function getErrors(iterable $data): array
     {
         $errors = [];

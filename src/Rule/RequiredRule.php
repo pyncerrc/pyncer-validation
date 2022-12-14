@@ -6,7 +6,7 @@ use Pyncer\Validation\Rule\RuleInterface;
 
 use function Pyncer\nullify as pyncer_nullify;
 
-class NonEmptyRule implements RuleInterface
+class RequiredRule implements RuleInterface
 {
     public function defend(mixed $value): mixed
     {
@@ -16,14 +16,17 @@ class NonEmptyRule implements RuleInterface
 
         return $this->clean($value);
     }
+
     public function isValid(mixed $value): bool
     {
         return (pyncer_nullify($value) !== null);
     }
+
     public function clean(mixed $value): mixed
     {
         return $value;
     }
+
     public function getError(): ?string
     {
         return 'required';
