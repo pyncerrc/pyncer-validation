@@ -1,34 +1,65 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
-use Pyncer\Validation\Rule\RuleInterface;
+use Pyncer\Validation\Rule\AbstractRule;
+use Stringable;
 
-use function Pyncer\nullify as pyncer_nullify;
+use function is_scalar;
 use function Pyncer\String\len as pyncer_str_len;
 use function Pyncer\String\sub as pyncer_str_sub;
 use function strval;
+use function trim;
 
-class StringRule implements RuleInterface
+class StringRule extends AbstractRule
 {
+    /**
+     * @param null|int $minLength The minimum length a string can be.
+     * @param null|int $maxLength The maximum length a string can be.
+     * @param bool $allowNull When true, null vlaues are valid.
+     * @param bool $allowEmpty When true, empty values are valid.
+     * @param bool $allowWhitespace When true, surrounding whitespace will
+     *      be allowed.
+     */
     public function __construct(
         private ?int $minLength = null,
         private ?int $maxLength = null,
-        private bool $allowNull = false,
-        private bool $allowEmpty = false,
-    ) {}
-
-    public function defend(mixed $value): mixed
-    {
-        return $this->clean($value);
+        bool $allowNull = false,
+        bool $allowEmpty = false,
+        bool $allowWhitespace = false,
+    ) {
+        parent::__construct(
+            allowNull: $allowNull,
+            allowEmpty: $allowEmpty,
+            allowWhitespace: $allowWhitespace,
+        );
     }
 
-    public function isValid(mixed $value): bool
+    /**
+     * {@inheritdoc}
+     */
+    protected function isValidValue(mixed $value): bool
     {
-        if ($value === null || $value === '') {
-            return ($this->allowNull || $this->allowEmpty);
+        if (is_scalar($value)) {
+            return true;
         }
 
+        if ($value instanceof Stringable) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isValidConstraint(mixed $value): bool
+    {
         $value = strval($value);
+
+        if (!$this->allowWhitespace) {
+            $value = trim($value);
+        }
 
         if ($this->minLength !== null && pyncer_str_len($value) < $this->minLength) {
             return false;
@@ -41,37 +72,33 @@ class StringRule implements RuleInterface
         return true;
     }
 
-    public function clean(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function cleanConstraint(mixed $value): mixed
     {
-        if ($value === null) {
-            if ($this->allowNull) {
-                return null;
-            }
-
-            if ($this->allowEmpty) {
-                return '';
-            }
-        } elseif (pyncer_nullify($value) === null) {
-            if ($this->allowEmpty) {
-                return '';
-            }
-
-            if ($this->allowNull) {
-                return null;
-            }
-        }
-
         $value = strval($value);
 
+        if (!$this->allowWhitespace) {
+            $value = trim($value);
+        }
+
         if ($this->maxLength !== null && pyncer_str_len($value) > $this->maxLength) {
-            return pyncer_string_sub($value, 0, $this->maxLength);
+            return pyncer_str_sub($value, 0, $this->maxLength);
         }
 
         return $value;
     }
 
-    public function getError(): ?string
+    /**
+     * {@inheritdoc}
+     */
+    protected function isEmpty(mixed $value): bool
     {
-        return 'invalid';
+        if (is_scalar($value) || $value instanceof Stringable) {
+            $value = strval($value);
+        }
+
+        return parent::isEmpty($value);
     }
 }

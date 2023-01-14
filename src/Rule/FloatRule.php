@@ -2,36 +2,49 @@
 namespace Pyncer\Validation\Rule;
 
 use Pyncer\Exception\InvalidArgumentException;
-use Pyncer\Validation\Rule\RuleInterface;
+use Pyncer\Validation\Rule\AbstractRule;
+use Stringable;
 
 use function floatval;
-use function is_int;
 use function is_float;
-use function Pyncer\nullify as pyncer_nullify;
+use function is_int;
+use function is_scalar;
+use function is_string;
 use function strval;
+use function trim;
 
-class FloatRule implements RuleInterface
+class FloatRule extends AbstractRule
 {
+    /**
+     * @param null|float $minValue The minimum value a float can be.
+     * @param null|float $maxValue The maximum value a float can be.
+     * @param bool $allowNull When true, null vlaues are valid.
+     * @param bool $allowEmpty When true, empty values are valid.
+     */
     public function __construct(
         private ?float $minValue = null,
         private ?float $maxValue = null,
-        private bool $allowNull = false,
-        private bool $allowEmpty = false,
-    ) {}
-
-    public function defend(mixed $value): mixed
-    {
-        if (!$this->isValid($value)) {
-            throw new InvalidArgumentException('Invalid float value specified.');
-        }
-
-        return $this->clean($value);
+        bool $allowNull = false,
+        bool $allowEmpty = false,
+    ) {
+        parent::__construct(
+            allowNull: $allowNull,
+            allowEmpty: $allowEmpty,
+            empty: 0.0,
+        );
     }
 
-    public function isValid(mixed $value): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function isValidValue(mixed $value): bool
     {
-        if ($value === null) {
-            return ($this->allowNull || $this->allowEmpty);
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
+        if (is_string($value)) {
+            $value = trim($value);
         }
 
         if (!is_int($value) && !is_float($value)) {
@@ -40,10 +53,18 @@ class FloatRule implements RuleInterface
             }
         }
 
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isValidConstraint(mixed $value): bool
+    {
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
-            if ($value === 0) {
+            if ($value === $this->empty) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -51,7 +72,7 @@ class FloatRule implements RuleInterface
         }
 
         if ($this->maxValue !== null && $value > $this->maxValue) {
-            if ($value === 0) {
+            if ($value === $this->empty) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -61,36 +82,11 @@ class FloatRule implements RuleInterface
         return true;
     }
 
-    public function clean(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function cleanConstraint(mixed $value): mixed
     {
-        if ($value === null) {
-            if ($this->allowNull) {
-                return null;
-            }
-
-            if ($this->allowEmpty) {
-                return 0.0;
-            }
-        } elseif (pyncer_nullify($value) === null) {
-            if ($this->allowEmpty) {
-                return 0.0;
-            }
-
-            if ($this->allowNull) {
-                return null;
-            }
-        }
-
-        if (!is_int($value) && !is_float($value)) {
-            if (strval(floatval($value)) !== strval($value)) {
-                if ($this->allowNull) {
-                    return null;
-                }
-
-                return 0.0;
-            }
-        }
-
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
@@ -104,8 +100,27 @@ class FloatRule implements RuleInterface
         return $value;
     }
 
-    public function getError(): ?string
+    /**
+     * {@inheritdoc}
+     */
+    protected function isNull(mixed $value): bool
     {
-        return 'invalid';
+        if (is_numeric($value) && floatval($value) === $this->empty) {
+            $value = $this->empty;
+        }
+
+        return parent::isNull($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isEmpty(mixed $value): bool
+    {
+        if (is_numeric($value) && floatval($value) === $this->empty) {
+            $value = $this->empty;
+        }
+
+        return parent::isEmpty($value);
     }
 }

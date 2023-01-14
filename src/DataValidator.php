@@ -11,30 +11,45 @@ use function Pyncer\Array\ensure_array as pyncer_ensure_array;
 
 class DataValidator
 {
+    /**
+     * @var array<string, array<\Pyncer\Validation\Rule\RuleInterface>>
+     */
     protected array $rules = [];
 
     public function __construct()
     {}
 
-    public function addRules(string|iterable $key, RuleInterface ...$rules): static
+    /**
+     * @param string|iterable<string> $key
+     * @param \Pyncer\Validation\Rule\RuleInterface ...$rules
+     * @return static
+     */
+    public function addRules(
+        string|iterable $key,
+        RuleInterface ...$rules
+    ): static
     {
         if ($key instanceof \Traversable) {
-            $key = iterator_to_array($key, true);
+            $keys = iterator_to_array($key, true);
         } else {
             $keys = pyncer_ensure_array($key, ['']);
         }
 
         foreach ($keys as $key) {
-            if (!isset($this->rules[$key])) {
-                $this->rules[$key] = $rules;
-            } else {
+            if (array_key_exists($key, $this->rules)) {
                 $this->rules[$key] = array_merge($this->rules[$key], $rules);
+            } else {
+                $this->rules[$key] = $rules;
             }
         }
 
         return $this;
     }
 
+    /**
+     * @param string ...$keys
+     * @return static
+     */
     public function deleteRules(string ...$keys): static
     {
         foreach ($keys as $key) {
@@ -44,6 +59,10 @@ class DataValidator
         return $this;
     }
 
+    /**
+     * @param string ...$keys
+     * @return bool
+     */
     public function hasRules(string ...$keys): bool
     {
         foreach ($keys as $key) {
@@ -55,6 +74,9 @@ class DataValidator
         return true;
     }
 
+    /**
+     * @return static
+     */
     public function clearRules(): static
     {
         $this->rules = [];
@@ -62,6 +84,10 @@ class DataValidator
         return $this;
     }
 
+    /**
+     * @param iterable<string, mixed> $data
+     * @return iterable<string, mixed>
+     */
     public function defend(iterable $data): iterable
     {
         if ($data instanceof \Traversable) {
@@ -83,6 +109,10 @@ class DataValidator
         return $data;
     }
 
+    /**
+     * @param iterable<string, mixed> $data
+     * @return bool
+     */
     public function isValid(iterable $data): bool
     {
         if ($data instanceof Traversable) {
@@ -106,6 +136,10 @@ class DataValidator
         return true;
     }
 
+    /**
+     * @param iterable<string, mixed> $data
+     * @return iterable<string, mixed>
+     */
     public function clean(iterable $data): iterable
     {
         if ($data instanceof Traversable) {
@@ -127,7 +161,11 @@ class DataValidator
         return $data;
     }
 
-    public function getErrors(iterable $data): array
+    /**
+     * @param iterable<string, mixed> $data
+     * @return iterable<string, string>
+     */
+    public function getErrors(iterable $data): iterable
     {
         $errors = [];
 

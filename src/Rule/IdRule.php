@@ -2,42 +2,71 @@
 namespace Pyncer\Validation\Rule;
 
 use Pyncer\Data\Mapper\MapperInterface;
-use Pyncer\Data\Mapper\Query\MapperQueryInterface;
-use Pyncer\Exception\InvalidArgumentException;
-use Pyncer\Validation\Rule\RuleInterface;
+use Pyncer\Data\MapperQuery\MapperQueryInterface;
+use Pyncer\Validation\Rule\IntRule;
 
+use function array_key_exists;
 use function intval;
-use function Pyncer\nullify as pyncer_nullify;
-use function strval;
+use function is_string;
+use function trim;
 
-class IdRule implements RuleInterface
+class IdRule extends IntRule
 {
+    /**
+     * @var array<int, bool>
+     */
     private array $tests = [];
 
+    /**
+     * @param \Pyncer\Data\Mapper\MapperInterface $mapper A mapper to query.
+     * @param string $column The name of the database column that stores the id.
+     * @param \Pyncer\Data\MapperQuery\MapperQueryInterface $mapperQuery
+     *      Optional mapper query to limit query results.
+     * @param bool $allowNull When true, null vlaues are valid.
+     * @param bool $allowEmpty When true, empty values are valid.
+     */
     public function __construct(
         private MapperInterface $mapper,
         private string $column = 'id',
         private ?MapperQueryInterface $mapperQuery = null,
-        private bool $allowNull = false,
-        private bool $allowEmpty = false,
-    ) {}
-
-    public function defend(mixed $value): mixed
-    {
-        if (!$this->isValid($value)) {
-            throw new InvalidArgumentException('Invalid integer value specified.');
-        }
-
-        return $this->clean($value);
+        bool $allowNull = false,
+        bool $allowEmpty = false,
+    ) {
+        parent::__construct(
+            minValue: 0,
+            allowNull: $allowNull,
+            allowEmpty: $allowEmpty,
+        );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isValid(mixed $value): bool
     {
-        if ($value === null || $value === 0) {
-            return ($this->allowNull || $this->allowEmpty);
+        if (!parent::isValid($value)) {
+            return false;
         }
 
-        if ($value < 0) {
+        if (!is_int($value) || $value === $this->empty) {
+            return true;
+        }
+
+        return $this->isValidId($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isValidId(mixed $value): bool
+    {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+
+        $value = intval($value);
+
+        if ($value <= 0) {
             return false;
         }
 
@@ -61,39 +90,29 @@ class IdRule implements RuleInterface
         return $this->tests[$value];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function clean(mixed $value): mixed
     {
-        if ($value === null) {
+        $value = parent::clean($value);
+
+        if (!is_int($value) || $value === $this->empty) {
+            return $value;
+        }
+
+        if (!$this->isValidId($value)) {
             if ($this->allowNull) {
                 return null;
             }
 
             if ($this->allowEmpty) {
-                return 0;
-            }
-        } elseif (pyncer_nullify($value) === null) {
-            if ($this->allowEmpty) {
-                return 0;
+                return $this->empty;
             }
 
-            if ($this->allowNull) {
-                return null;
-            }
+            return '';
         }
 
-        if (!$this->isValid($value)) {
-            if ($this->allowNull) {
-                return null;
-            }
-
-            return 0;
-        }
-
-        return max(0, intval($value));
-    }
-
-    public function getError(): ?string
-    {
-        return 'invalid';
+        return $value;
     }
 }

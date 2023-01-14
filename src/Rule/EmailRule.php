@@ -1,46 +1,40 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
-use Pyncer\Exception\InvalidArgumentException;
-use Pyncer\Validation\Rule\RuleInterface;
+use Pyncer\Validation\Rule\AbstractRule;
+use Stringable;
 
-use function Pyncer\nullify as pyncer_nullify;
+use function filter_var;
+use function is_scalar;
+use function strval;
+use function trim;
 
-class EmailRule implements RuleInterface
+// TODO: Option to support 'name <name@example.com>' format.
+class EmailRule extends AbstractRule
 {
-    public function defend(mixed $value): mixed
+    public function __construct()
     {
-        if (!$this->isValid($value)) {
-            throw new InvalidArgumentException('Empty value specified.');
-        }
-
-        return $this->clean($value);
+        parent::__construct(
+            allowNull: true,
+            allowEmpty: true,
+        );
     }
 
-    public function isValid(mixed $value): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function isValidValue(mixed $value): bool
     {
-        if ($value === null || $value === '') {
-            return true;
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
         }
+
+        $value = trim(strval($value));
 
         if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {
             return true;
         }
 
         return false;
-    }
-
-    public function clean(mixed $value): mixed
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return strval($value);
-    }
-
-    public function getError(): ?string
-    {
-        return 'invalid';
     }
 }

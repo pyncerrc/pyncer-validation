@@ -6,16 +6,31 @@
     "license": "Unlicense",
     "require": {
         "php": ">=8.1",
-        "pyncer/core": "^1.0",
+        "pyncer/core": "^1.0.1",
+        "pyncer/data": "^1.0",
         "pyncer/exception": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.9"
     },
     "autoload": {
         "psr-4": {
             "Pyncer\\Validation\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Pyncer\\Tests\\Validation\\": "tests/"
+        }
+    },
     "support": {
         "issues": "https://github.com/pyncerrc/pyncer-validation/issues",
         "source": "https://github.com/pyncerrc/pyncer-validation"
+    },
+    "extra" : {
+        "branch-alias" : {
+            "dev-main" : "1.1-dev"
+        }
     }
 }

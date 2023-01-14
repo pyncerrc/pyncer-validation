@@ -5,6 +5,9 @@ use Pyncer\Validation\Rule\RuleInterface;
 
 class ValueValidator
 {
+    /**
+     * @var array<\Pyncer\Validation\Rule\RuleInterface>
+     */
     protected array $rules = [];
 
     public function __construct()

@@ -1,39 +1,26 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
-use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\AbstractRule;
 use Stringable;
 
-use function in_array;
+use function preg_match;
 use function is_scalar;
 use function strval;
 use function trim;
 
-// TODO: Support passing php enum::class for values.
-class EnumRule extends AbstractRule
+class UidRule extends AbstractRule
 {
     /**
-     * @param array<int|string, mixed> $values An array of allowed values.
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
      * @param string $empty The value to use as an empty value.
      */
     public function __construct(
-        private array $values,
         bool $allowNull = false,
         bool $allowEmpty = false,
-        string $empty = '',
+        string $empty = '00000000-0000-0000-0000-000000000000',
     ) {
-        if (in_array(null, $values, true) ||
-            in_array('', $values, true) ||
-            in_array($empty, $values, true)
-        ) {
-            throw new InvalidArgumentException(
-                'Values cannot contain null or an empty value.'
-            );
-        }
-
         parent::__construct(
             allowNull: $allowNull,
             allowEmpty: $allowEmpty,
@@ -52,6 +39,26 @@ class EnumRule extends AbstractRule
 
         $value = trim(strval($value));
 
-        return in_array($value, $this->values, true);
+        if ($value === '00000000-0000-0000-0000-000000000000') {
+            return false;
+        }
+
+        $pattern = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';
+        if (preg_match($pattern, $value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function clean(mixed $value): mixed
+    {
+        $value = parent::clean($value);
+
+        if (is_string($value)) {
+            $value = strtolower($value);
+        }
+
+        return $value;
     }
 }
