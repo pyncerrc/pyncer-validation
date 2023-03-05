@@ -18,7 +18,7 @@ class BoolRule implements RuleInterface
     ) {}
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function defend(mixed $value): mixed
     {
@@ -26,7 +26,7 @@ class BoolRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isValid(mixed $value): bool
     {
@@ -34,7 +34,7 @@ class BoolRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function clean(mixed $value): mixed
     {
@@ -66,7 +66,7 @@ class BoolRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getError(): ?string
     {

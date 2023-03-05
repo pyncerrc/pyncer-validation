@@ -70,7 +70,7 @@ class TimeRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function cleanConstraint(mixed $value): mixed
     {

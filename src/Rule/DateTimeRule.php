@@ -31,7 +31,7 @@ class DateTimeRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isValidValue(mixed $value): bool
     {
@@ -54,7 +54,7 @@ class DateTimeRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function clean(mixed $value): mixed
     {

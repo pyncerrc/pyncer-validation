@@ -24,7 +24,7 @@ abstract class AbstractRule implements RuleInterface
     ) {}
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function defend(mixed $value): mixed
     {
@@ -36,7 +36,7 @@ abstract class AbstractRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isValid(mixed $value): bool
     {
@@ -78,7 +78,7 @@ abstract class AbstractRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function clean(mixed $value): mixed
     {
@@ -137,7 +137,7 @@ abstract class AbstractRule implements RuleInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getError(): ?string
     {

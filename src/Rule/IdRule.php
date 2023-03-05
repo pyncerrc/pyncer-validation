@@ -40,7 +40,7 @@ class IdRule extends IntRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isValid(mixed $value): bool
     {
@@ -56,7 +56,7 @@ class IdRule extends IntRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function isValidId(mixed $value): bool
     {
@@ -91,7 +91,7 @@ class IdRule extends IntRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function clean(mixed $value): mixed
     {

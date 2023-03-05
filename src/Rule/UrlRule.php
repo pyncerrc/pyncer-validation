@@ -20,7 +20,7 @@ class UrlRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isValidValue(mixed $value): bool
     {

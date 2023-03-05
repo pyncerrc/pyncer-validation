@@ -26,7 +26,7 @@ class Base64IdRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function isValidValue(mixed $value): bool
     {

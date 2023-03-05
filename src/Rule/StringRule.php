@@ -35,7 +35,7 @@ class StringRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function isValidValue(mixed $value): bool
     {
@@ -51,7 +51,7 @@ class StringRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function isValidConstraint(mixed $value): bool
     {
@@ -73,7 +73,7 @@ class StringRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function cleanConstraint(mixed $value): mixed
     {
@@ -91,7 +91,7 @@ class StringRule extends AbstractRule
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function isEmpty(mixed $value): bool
     {
