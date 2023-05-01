@@ -416,9 +416,12 @@ class RuleTest extends TestCase
         $this->assertFalse($rule->isValid(0));
         $this->assertFalse($rule->isValid(0.0));
         $this->assertFalse($rule->isValid(null));
+        $this->assertFalse($rule->isValid(true));
+        $this->assertFalse($rule->isValid(false));
         $this->assertFalse($rule->isValid(''));
         $this->assertFalse($rule->isValid(' '));
         $this->assertFalse($rule->isValid('test'));
+        $this->assertFalse($rule->isValid('50test'));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));
 
@@ -464,9 +467,12 @@ class RuleTest extends TestCase
         $this->assertTrue($rule->isValid(0));
         $this->assertTrue($rule->isValid(0.0));
         $this->assertTrue($rule->isValid(null));
+        $this->assertFalse($rule->isValid(true));
+        $this->assertFalse($rule->isValid(false));
         $this->assertTrue($rule->isValid(''));
         $this->assertTrue($rule->isValid(' '));
         $this->assertFalse($rule->isValid('test'));
+        $this->assertFalse($rule->isValid('50test'));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));
 
@@ -557,8 +563,6 @@ class RuleTest extends TestCase
             allowEmpty: false,
         );
 
-        $this->assertTrue($rule->isValid('-50.0'));
-
         $this->assertTrue($rule->isValid(-50));
         $this->assertTrue($rule->isValid(-50.0));
         $this->assertFalse($rule->isValid(-50.5));
@@ -579,9 +583,12 @@ class RuleTest extends TestCase
         $this->assertFalse($rule->isValid(0));
         $this->assertFalse($rule->isValid(0.0));
         $this->assertFalse($rule->isValid(null));
+        $this->assertFalse($rule->isValid(true));
+        $this->assertFalse($rule->isValid(false));
         $this->assertFalse($rule->isValid(''));
         $this->assertFalse($rule->isValid(' '));
         $this->assertFalse($rule->isValid('test'));
+        $this->assertFalse($rule->isValid('50test'));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));
 
@@ -637,10 +644,15 @@ class RuleTest extends TestCase
         $this->assertFalse($rule->isValid(150.5));
         $this->assertTrue($rule->isValid(0));
         $this->assertTrue($rule->isValid(0.0));
+        $this->assertTrue($rule->isValid('0'));
+        $this->assertTrue($rule->isValid('0.0'));
         $this->assertTrue($rule->isValid(null));
+        $this->assertFalse($rule->isValid(true));
+        $this->assertFalse($rule->isValid(false));
         $this->assertTrue($rule->isValid(''));
         $this->assertTrue($rule->isValid(' '));
         $this->assertFalse($rule->isValid('test'));
+        $this->assertFalse($rule->isValid('50test'));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));
 

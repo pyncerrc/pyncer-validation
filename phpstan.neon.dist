@@ -9,6 +9,6 @@ parameters:
             count: 1
             path: src/DataValidator.php
         -
-            message: "#^Property Pyncer\\\\Validation\\\\DataValidator::$rules (array<string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>) does not accept array<int|string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>\\.$#"
+            message: "#^Property Pyncer\\\\Validation\\\\DataValidator::$rules \\(array<string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>\\) does not accept array<int|string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>\\.$#"
             count: 2
             path: src/DataValidator.php

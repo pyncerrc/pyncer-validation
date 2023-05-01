@@ -39,7 +39,19 @@ class IntRule extends AbstractRule
      */
     public function isValidValue(mixed $value): bool
     {
-        if (!is_scalar($value) && !$value instanceof Stringable) {
+        if (is_int($value)) {
+            return true;
+        }
+
+        if (is_bool($value)) {
+            return false;
+        }
+
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
+        if (!is_scalar($value)) {
             return false;
         }
 
@@ -47,14 +59,17 @@ class IntRule extends AbstractRule
             $value = trim($value);
         }
 
-        if (!is_int($value)) {
-            if (strval(intval($value)) !== strval(floatval($value))) {
-                return false;
-            }
+        if ($value === '0' || $value === '0.0' || $value === 0.0) {
+            return true;
+        }
 
-            if (strval(intval($value)) === '0') {
-                return false;
-            }
+        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
+            return false;
+        }
+
+        // Floats with decimals are invalid
+        if (strval(intval($value)) !== strval(floatval($value))) {
+            return false;
         }
 
         return true;
@@ -65,6 +80,10 @@ class IntRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
         if (is_string($value)) {
             $value = trim($value);
         }

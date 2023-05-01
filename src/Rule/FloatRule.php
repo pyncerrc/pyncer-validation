@@ -39,7 +39,19 @@ class FloatRule extends AbstractRule
      */
     public function isValidValue(mixed $value): bool
     {
-        if (!is_scalar($value) && !$value instanceof Stringable) {
+        if (is_float($value) || is_int($value)) {
+            return true;
+        }
+
+        if (is_bool($value)) {
+            return false;
+        }
+
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
+        if (!is_scalar($value)) {
             return false;
         }
 
@@ -47,10 +59,12 @@ class FloatRule extends AbstractRule
             $value = trim($value);
         }
 
-        if (!is_int($value) && !is_float($value)) {
-            if (strval(floatval($value)) !== strval($value)) {
-                return false;
-            }
+        if ($value === '0' || $value === '0.0') {
+            return true;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
+            return false;
         }
 
         return true;
@@ -61,6 +75,14 @@ class FloatRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {

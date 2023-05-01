@@ -3,6 +3,7 @@ namespace Pyncer\Validation\Rule;
 
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\RuleInterface;
+use Stringable;
 
 use function is_string;
 use function trim;
@@ -118,6 +119,10 @@ abstract class AbstractRule implements RuleInterface
             return '';
         }
 
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
         if (is_string($value) && !$this->allowWhitespace) {
             $value = trim($value);
         }
@@ -171,6 +176,10 @@ abstract class AbstractRule implements RuleInterface
      */
     protected function isEmpty(mixed $value): bool
     {
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
         if (is_string($value) && !$this->allowWhitespace) {
             $value = trim($value);
         }
