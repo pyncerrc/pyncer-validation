@@ -3,6 +3,7 @@ namespace Pyncer\Validation\Rule;
 
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\RuleInterface;
+use Stringable;
 
 use function is_string;
 use function Pyncer\nullify as pyncer_nullify;
@@ -35,6 +36,10 @@ class RequiredRule implements RuleInterface
      */
     public function isValid(mixed $value): bool
     {
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
         if (is_string($value) && !$this->allowWhitespace) {
             $value = trim($value);
         }

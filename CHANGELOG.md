@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.2 - 2023-05-11
+
+### Fixed
+
+- Added Stringable support to RequiredRule.
+
 ## 1.1.1 - 2023-04-30
 
 ### Added
