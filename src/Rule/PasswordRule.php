@@ -10,26 +10,22 @@ use function Pyncer\String\sub as pyncer_str_sub;
 use function strval;
 use function trim;
 
-class StringRule extends AbstractRule
+class PasswordRule extends AbstractRule
 {
-    /**
-     * @param null|int $minLength The minimum length a string can be.
-     * @param null|int $maxLength The maximum length a string can be.
-     * @param bool $allowNull When true, null vlaues are valid.
-     * @param bool $allowEmpty When true, empty values are valid.
-     * @param bool $allowWhitespace When true, surrounding whitespace will
-     *      be allowed.
-     */
     public function __construct(
-        private ?int $minLength = null,
-        private ?int $maxLength = null,
-        bool $allowNull = false,
-        bool $allowEmpty = false,
+        protected ?int $minLength = null,
+        protected ?int $maxLength = null,
+        protected bool $requireNumericCharacters = false,
+        protected bool $requireAlphaCharacters = false,
+        protected bool $requireLowerCaseCharacters = false,
+        protected bool $requireUpperCaseCharacters = false,
+        protected bool $requireSpecialCharacters = false,
+        protected string $specialCharacters = '+=-_!@#$%^&*()?<>{}[]"\'.,`~|\\/:;',
         bool $allowWhitespace = false,
     ) {
         parent::__construct(
-            allowNull: $allowNull,
-            allowEmpty: $allowEmpty,
+            allowNull: true,
+            allowEmpty: true,
             allowWhitespace: $allowWhitespace,
         );
     }
@@ -69,6 +65,37 @@ class StringRule extends AbstractRule
             return false;
         }
 
+        if ($this->requireNumericCharacters) {
+            if (!preg_match('/\d+/', $value)) {
+                return false;
+            }
+        }
+
+        if ($this->requireAlphaCharacters) {
+            if (!preg_match('/\p{L}+/u', $value)) {
+                return false;
+            }
+        }
+
+        if ($this->requireLowerCaseCharacters) {
+            if (!preg_match('/\p{Ll}+/u', $value)) {
+                return false;
+            }
+        }
+
+        if ($this->requireUpperCaseCharacters) {
+            if (!preg_match('/\p{Lu}+/u', $value)) {
+                return false;
+            }
+        }
+
+        if ($this->requireSpecialCharacters) {
+            $pattern = '/[' . preg_quote($this->specialCharacters, '/') . ']+/';
+            if (!preg_match($pattern, $value)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -79,25 +106,14 @@ class StringRule extends AbstractRule
     {
         $value = strval($value);
 
-        /** @var string */
-        $value = parent::cleanConstraint($value);
+        if (!$this->allowWhitespace) {
+            $value = trim($value);
+        }
 
         if ($this->maxLength !== null && pyncer_str_len($value) > $this->maxLength) {
             return pyncer_str_sub($value, 0, $this->maxLength);
         }
 
         return $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function isEmpty(mixed $value): bool
-    {
-        if (is_scalar($value) || $value instanceof Stringable) {
-            $value = strval($value);
-        }
-
-        return parent::isEmpty($value);
     }
 }

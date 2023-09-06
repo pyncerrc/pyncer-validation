@@ -8,6 +8,164 @@ use StdClass;
 
 class RuleTest extends TestCase
 {
+    public function testAliasRule(): void
+    {
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: true,
+            allowLowerCaseCharacters: true,
+            allowUpperCaseCharacters: true,
+            allowUnicodeCharacters: true,
+            separatorCharacters: '-',
+            replacementCharacter: '',
+        );
+
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertEquals($rule->clean('AZaz09-草'), 'AZaz09-草');
+        $this->assertEquals($rule->clean('--A--Z--'), 'A-Z');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: true,
+            allowUpperCaseCharacters: true,
+            allowUnicodeCharacters: true,
+            separatorCharacters: '-',
+            replacementCharacter: '',
+        );
+
+        $this->assertTrue($rule->isValid('AZaz-草'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('0-9'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz09-草'));
+
+        $this->assertEquals($rule->clean('AZaz09-草'), 'AZaz-草');
+        $this->assertEquals($rule->clean('--0--9--'), '');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: true,
+            allowUpperCaseCharacters: true,
+            allowUnicodeCharacters: false,
+            separatorCharacters: '-',
+            replacementCharacter: '_',
+        );
+
+        $this->assertTrue($rule->isValid('AZaz'));
+        $this->assertTrue($rule->isValid('AZaz-'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz-09-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-09'));
+
+        $this->assertEquals($rule->clean('AZaz09-草'), 'AZaz__-_');
+        $this->assertEquals($rule->clean('--A Z--'), 'A-Z');
+        $this->assertEquals($rule->clean('--0--9--'), '');
+        $this->assertEquals($rule->clean('$^'), '');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: false,
+            allowUpperCaseCharacters: true,
+            allowUnicodeCharacters: false,
+            separatorCharacters: '-_',
+            replacementCharacter: '*',
+        );
+
+        $this->assertTrue($rule->isValid('AZ'));
+        $this->assertTrue($rule->isValid('az'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz-09-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-09'));
+
+        $this->assertEquals($rule->clean('AZ-az_09-草'), 'AZ-AZ_**-*');
+        $this->assertEquals($rule->clean('--A Z--'), 'A-Z');
+        $this->assertEquals($rule->clean('--0--9--'), '');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: true,
+            allowUpperCaseCharacters: false,
+            allowUnicodeCharacters: false,
+            separatorCharacters: '-_',
+            replacementCharacter: '-',
+        );
+
+        $this->assertTrue($rule->isValid('az'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz-09-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-09'));
+
+        $this->assertEquals($rule->clean('AZ-az_09-草'), 'az-az');
+        $this->assertEquals($rule->clean('--A Z--'), 'a-z');
+        $this->assertEquals($rule->clean('--0--9--'), '');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: true,
+            allowUpperCaseCharacters: false,
+            allowUnicodeCharacters: true,
+            separatorCharacters: '-',
+            replacementCharacter: '-',
+        );
+
+        $this->assertTrue($rule->isValid('az草'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz-09-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-09'));
+
+        $this->assertEquals($rule->clean('AZ-az_09-草'), 'az-az-草');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: false,
+            allowUpperCaseCharacters: true,
+            allowUnicodeCharacters: true,
+            separatorCharacters: '-',
+            replacementCharacter: '-',
+        );
+
+        $this->assertTrue($rule->isValid('AZ-草'));
+        $this->assertTrue($rule->isValid('AZaz09-草'));
+        $this->assertFalse($rule->isValid('$^'));
+
+        $this->assertFalse($rule->isValidAndClean('AZaz-09-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-草'));
+        $this->assertFalse($rule->isValidAndClean('AZaz-09'));
+
+        $this->assertEquals($rule->clean('AZ-az_09-草'), 'AZ-AZ-草');
+
+        $rule = new \Pyncer\Validation\Rule\AliasRule(
+            allowNumericCharacters: false,
+            allowLowerCaseCharacters: false,
+            allowUpperCaseCharacters: false,
+            allowUnicodeCharacters: true,
+            separatorCharacters: '-',
+            replacementCharacter: '-',
+        );
+
+        $this->assertTrue($rule->isValid('AZ-草'));
+        $this->assertTrue($rule->isValid('AZ'));
+        $this->assertTrue($rule->isValid('az'));
+
+        $this->assertEquals($rule->clean('AZ-草'), 'AZ-草');
+        $this->assertEquals($rule->clean('AZ'), 'AZ');
+        $this->assertEquals($rule->clean('az'), 'az');
+    }
     public function testBase64IdRule(): void
     {
         $rule = new \Pyncer\Validation\Rule\Base64IdRule(
@@ -208,6 +366,17 @@ class RuleTest extends TestCase
         $this->assertEquals($rule->clean(' '), 'any time');
         $this->assertEquals($rule->clean('any time'), 'any time');
         $this->assertEquals($rule->clean('0000-00-00'), '');
+
+        $rule = new \Pyncer\Validation\Rule\DateRule(
+            minValue: '2023-01-01',
+            maxValue: '2023-01-31',
+        );
+
+        $this->assertTrue($rule->isValid('2023-01-01'));
+        $this->assertTrue($rule->isValid('2023-01-21'));
+        $this->assertTrue($rule->isValid('2023-01-31'));
+        $this->assertFalse($rule->isValid('2022-12-31'));
+        $this->assertFalse($rule->isValid('2023-02-01'));
     }
 
     public function testDateTimeRule(): void
@@ -290,6 +459,19 @@ class RuleTest extends TestCase
         $this->assertEquals($rule->clean(' '), 'any time');
         $this->assertEquals($rule->clean('any time'), 'any time');
         $this->assertEquals($rule->clean('0000-00-00 00:00:00'), '');
+
+        $rule = new \Pyncer\Validation\Rule\DateTimeRule(
+            minValue: '2023-01-01 00:00:10',
+            maxValue: '2023-01-31 23:59:49',
+        );
+
+        $this->assertTrue($rule->isValid('2023-01-01 00:00:10'));
+        $this->assertTrue($rule->isValid('2023-01-21 12:01:01'));
+        $this->assertTrue($rule->isValid('2023-01-31 23:59:49'));
+        $this->assertFalse($rule->isValid('2023-01-01 00:00:00'));
+        $this->assertFalse($rule->isValid('2023-01-31 23:59:59'));
+        $this->assertFalse($rule->isValid('2022-12-31 00:00:00'));
+        $this->assertFalse($rule->isValid('2023-02-01 00:00:00'));
     }
 
     public function testEmailRule(): void
@@ -717,6 +899,61 @@ class RuleTest extends TestCase
             allowWhitespace: true,
         );
         $this->assertEquals($rule->clean(' '), ' ');
+    }
+
+    public function testPasswordRule(): void
+    {
+        $rule = new \Pyncer\Validation\Rule\PasswordRule(
+            minLength: 3,
+            maxLength: 10,
+            requireNumericCharacters: true,
+            requireAlphaCharacters: true,
+            requireLowerCaseCharacters: true,
+            requireUpperCaseCharacters: true,
+            requireSpecialCharacters: true,
+            specialCharacters: '+=-_!@#$%^&*()?<>{}[]"\'.,`~|\\/:;',
+            allowWhitespace: false,
+        );
+
+        $this->assertTrue($rule->isValid('1aZ$'));
+        $this->assertFalse($rule->isValid('aZ$'));
+        $this->assertFalse($rule->isValid('1Z$'));
+        $this->assertFalse($rule->isValid('1a$'));
+        $this->assertFalse($rule->isValid('1aZ'));
+        $this->assertTrue($rule->isValid('1a Z$'));
+        $this->assertTrue($rule->isValid(' 1a Z$ '));
+        $this->assertTrue($rule->isValid('1aZ$aaaaaa'));
+        $this->assertFalse($rule->isValid('1aZ$aaaaaab'));
+
+        $this->assertTrue($rule->isValidAndClean('1a Z$'));
+        $this->assertFalse($rule->isValidAndClean(' 1a Z$ '));
+    }
+
+    public function testPhoneRule(): void
+    {
+        $rule = new \Pyncer\Validation\Rule\PhoneRule(
+            allowNanp: true,
+            allowE164: true,
+            allowFormatting: true,
+        );
+
+        $this->assertTrue($rule->isValid('555-555-5555'));
+        $this->assertTrue($rule->isValid('(555) 555-5555'));
+        $this->assertTrue($rule->isValid('+1-555-555-5555'));
+        $this->assertTrue($rule->isValid('+1-555-555'));
+
+        $rule = new \Pyncer\Validation\Rule\PhoneRule(
+            allowNanp: true,
+            allowE164: false,
+            allowFormatting: false,
+        );
+
+        $this->assertTrue($rule->isValid('555-555-5555'));
+        $this->assertTrue($rule->isValid('(555) 555-5555'));
+        $this->assertTrue($rule->isValid('+1-555-555-5555'));
+        $this->assertFalse($rule->isValid('+1-555-555'));
+
+        $this->assertFalse($rule->isValidAndClean('(555) 555-5555'));
     }
 
     public function testRequiredRule(): void

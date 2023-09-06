@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.2.0 - 2023-09-04
+
+### Added
+
+- Added password rule.
+- Added phone rule.
+- Added alias rule.
+- Added min and max values for DateRule and DateTimeRule.
+- Unit test cases for new rules.
+- Added isValidAndClean function to validators.
+
 ## 1.1.2 - 2023-05-11
 
 ### Fixed

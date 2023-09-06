@@ -52,6 +52,17 @@ class ValueValidator
         return true;
     }
 
+    public function isValidAndClean(mixed $value): bool
+    {
+        foreach ($this->rules as $rule) {
+            if (!$rule->isValidAndClean($value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function clean(mixed $value): mixed
     {
         foreach ($this->rules as $rule) {

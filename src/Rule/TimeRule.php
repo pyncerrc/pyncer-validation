@@ -50,6 +50,9 @@ class TimeRule extends AbstractRule
         return false;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function isValidConstraint(mixed $value): bool
     {
         $value = trim(strval($value));
@@ -74,6 +77,8 @@ class TimeRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        $value = parent::cleanConstraint($value);
+
         if (is_string($value)) {
             if ($this->minValue !== null &&
                 $this->compareTimes($this->minValue, $value) < 0

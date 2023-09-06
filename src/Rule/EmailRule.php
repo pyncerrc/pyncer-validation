@@ -25,10 +25,22 @@ class EmailRule extends AbstractRule
      */
     public function isValidValue(mixed $value): bool
     {
-        if (!is_scalar($value) && !$value instanceof Stringable) {
-            return false;
+        if (is_scalar($value)) {
+            return true;
         }
 
+        if ($value instanceof Stringable) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function isValidConstraint(mixed $value): bool
+    {
         $value = trim(strval($value));
 
         if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {

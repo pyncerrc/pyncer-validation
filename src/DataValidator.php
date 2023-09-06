@@ -138,6 +138,31 @@ class DataValidator
 
     /**
      * @param iterable<string, mixed> $data
+     * @return bool
+     */
+    public function isValidAndClean(iterable $data): bool
+    {
+        if ($data instanceof Traversable) {
+            $data = iterator_to_array($data, true);
+        }
+
+        foreach ($data as $key => $value) {
+            if (!isset($this->rules[$key])) {
+                continue;
+            }
+
+            foreach ($this->rules[$key] as $rule) {
+                if (!$rule->isValidAndClean($value)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param iterable<string, mixed> $data
      * @return iterable<string, mixed>
      */
     public function clean(iterable $data): iterable

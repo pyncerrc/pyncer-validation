@@ -12,11 +12,15 @@ use function trim;
 class DateRule extends AbstractRule
 {
     /**
+     * @param null|string $minValue The minimum value a date string can be.
+     * @param null|string $maxValue The maximum value a date string can be.
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
      * @param string $empty The value to use as an empty value.
      */
     public function __construct(
+        private ?string $minValue = null,
+        private ?string $maxValue = null,
         bool $allowNull = false,
         bool $allowEmpty = false,
         string $empty = '0000-00-00',
@@ -45,5 +49,56 @@ class DateRule extends AbstractRule
         }
 
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function isValidConstraint(mixed $value): bool
+    {
+        $value = trim(strval($value));
+
+        if ($this->minValue !== null &&
+            $this->compareDates($this->minValue, $value) > 0
+        ) {
+            return false;
+        }
+
+        if ($this->maxValue !== null &&
+            $this->compareDates($this->maxValue, $value) < 0
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function cleanConstraint(mixed $value): mixed
+    {
+        $value = parent::cleanConstraint($value);
+
+        if (is_string($value)) {
+            if ($this->minValue !== null &&
+                $this->compareDates($this->minValue, $value) > 0
+            ) {
+                return $this->minValue;
+            }
+
+            if ($this->maxValue !== null &&
+                $this->compareDates($this->maxValue, $value) < 0
+            ) {
+                return $this->maxValue;
+            }
+        }
+
+        return $value;
+    }
+
+    private function compareDates(string $a, string $b): int
+    {
+        return $a <=> $b;
     }
 }

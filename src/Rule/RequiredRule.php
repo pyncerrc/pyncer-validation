@@ -58,6 +58,22 @@ class RequiredRule implements RuleInterface
     /**
      * @inheritdoc
      */
+    public function isValidAndClean(mixed $value): bool
+    {
+        if (!$this->isValid($value)) {
+            return false;
+        }
+
+        if ($this->clean($value) !== $value) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getError(): ?string
     {
         return 'required';

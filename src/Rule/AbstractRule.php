@@ -57,6 +57,22 @@ abstract class AbstractRule implements RuleInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function isValidAndClean(mixed $value): bool
+    {
+        if (!$this->isValid($value)) {
+            return false;
+        }
+
+        if ($this->clean($value) !== $value) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Determines if $value is a valid value.
      *
      * @param mixed $value The value to test.
@@ -119,14 +135,6 @@ abstract class AbstractRule implements RuleInterface
             return '';
         }
 
-        if ($value instanceof Stringable) {
-            $value = strval($value);
-        }
-
-        if (is_string($value) && !$this->allowWhitespace) {
-            $value = trim($value);
-        }
-
         return $this->cleanConstraint($value);
     }
 
@@ -138,6 +146,14 @@ abstract class AbstractRule implements RuleInterface
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        if ($value instanceof Stringable) {
+            $value = strval($value);
+        }
+
+        if (is_string($value) && !$this->allowWhitespace) {
+            $value = trim($value);
+        }
+
         return $value;
     }
 
