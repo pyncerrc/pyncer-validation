@@ -29,11 +29,7 @@ class DataValidator
         RuleInterface ...$rules
     ): static
     {
-        if ($key instanceof \Traversable) {
-            $keys = iterator_to_array($key, true);
-        } else {
-            $keys = pyncer_ensure_array($key, ['']);
-        }
+        $keys = pyncer_ensure_array($key, ['']);
 
         foreach ($keys as $key) {
             if (array_key_exists($key, $this->rules)) {
@@ -90,9 +86,7 @@ class DataValidator
      */
     public function defend(iterable $data): iterable
     {
-        if ($data instanceof \Traversable) {
-            $data = iterator_to_array($data, true);
-        }
+        $data = [...$data];
 
         foreach ($data as $key => $value) {
             if (!isset($this->rules[$key])) {
@@ -115,10 +109,6 @@ class DataValidator
      */
     public function isValid(iterable $data): bool
     {
-        if ($data instanceof Traversable) {
-            $data = iterator_to_array($data, true);
-        }
-
         foreach ($data as $key => $value) {
             if (!isset($this->rules[$key])) {
                 continue;
@@ -142,10 +132,6 @@ class DataValidator
      */
     public function isValidAndClean(iterable $data): bool
     {
-        if ($data instanceof Traversable) {
-            $data = iterator_to_array($data, true);
-        }
-
         foreach ($data as $key => $value) {
             if (!isset($this->rules[$key])) {
                 continue;
@@ -167,9 +153,7 @@ class DataValidator
      */
     public function clean(iterable $data): iterable
     {
-        if ($data instanceof Traversable) {
-            $data = iterator_to_array($data, true);
-        }
+        $data = [...$data];
 
         foreach ($data as $key => $value) {
             if (!isset($this->rules[$key])) {
@@ -193,10 +177,6 @@ class DataValidator
     public function getErrors(iterable $data): iterable
     {
         $errors = [];
-
-        if ($data instanceof Traversable) {
-            $data = iterator_to_array($data, true);
-        }
 
         foreach ($data as $key => $value) {
             if (!isset($this->rules[$key])) {
