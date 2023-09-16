@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Tests\Validation;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\Model\ModelInterface;
@@ -388,6 +389,7 @@ class RuleTest extends TestCase
         );
 
         $this->assertFalse($rule->isValid(null));
+        $this->assertTrue($rule->isValid(new DateTime()));
         $this->assertFalse($rule->isValid(''));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));

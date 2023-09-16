@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.2.1 - 2023-09-16
+
+### Fixed
+
+- Fixed issues with DateTime support in DateTimeRule.
+- Removed unnecessary use of iterator\_to\_array function.
+
 ## 1.2.0 - 2023-09-04
 
 ### Added

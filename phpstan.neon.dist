@@ -12,3 +12,11 @@ parameters:
             message: "#^Property Pyncer\\\\Validation\\\\DataValidator::$rules \\(array<string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>\\) does not accept array<int|string, array<Pyncer\\\\Validation\\\\Rule\\\\RuleInterface>>\\.$#"
             count: 2
             path: src/DataValidator.php
+        -
+            message: "#^Used constant Pyncer\\\\DATE_TIME_FORMAT not found\\.$#"
+            count: 1
+            path: src/Rule/DateTimeRule.php
+        -
+            message: "#^Constant Pyncer\\\\DATE_TIME_FORMAT not found\\.$#"
+            count: 2
+            path: src/Rule/DateTimeRule.php
