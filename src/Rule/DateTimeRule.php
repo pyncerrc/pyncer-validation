@@ -7,8 +7,11 @@ use Stringable;
 
 use function preg_match;
 use function is_scalar;
+use function Pyncer\date_time as pyncer_date_time;
 use function strval;
 use function trim;
+
+use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
 
 // TODO: Support milliseconds.
 class DateTimeRule extends AbstractRule
@@ -60,20 +63,12 @@ class DateTimeRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    public function clean(mixed $value): mixed
-    {
-        if ($value instanceof DateTimeInterface) {
-            return $value;
-        }
-
-        return parent::clean($value);
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function isValidConstraint(mixed $value): bool
     {
+        if ($value instanceof DateTimeInterface) {
+            $value = $value->format(PYNCER_DATE_TIME_FORMAT);
+        }
+
         $value = trim(strval($value));
 
         if ($this->minValue !== null &&
@@ -96,20 +91,39 @@ class DateTimeRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        $isDateTime = false;
+
+        if ($value instanceof DateTimeInterface) {
+            $isDateTime = true;
+            $value = $value->format(PYNCER_DATE_TIME_FORMAT);
+        }
+
         $value = parent::cleanConstraint($value);
 
         if (is_string($value)) {
             if ($this->minValue !== null &&
                 $this->compareDateTimes($this->minValue, $value) > 0
             ) {
+                if ($isDateTime) {
+                    return pyncer_date_time($this->minValue);
+                }
+
                 return $this->minValue;
             }
 
             if ($this->maxValue !== null &&
                 $this->compareDateTimes($this->maxValue, $value) < 0
             ) {
+                if ($isDateTime) {
+                    return pyncer_date_time($this->maxValue);
+                }
+
                 return $this->maxValue;
             }
+        }
+
+        if ($isDateTime) {
+            return pyncer_date_time($value);
         }
 
         return $value;
