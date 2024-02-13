@@ -22,7 +22,7 @@ class PasswordRule extends AbstractRule
         protected bool $requireLowerCaseCharacters = false,
         protected bool $requireUpperCaseCharacters = false,
         protected bool $requireSpecialCharacters = false,
-        protected string $specialCharacters = static::SPECIAL_CHARACTERS,
+        protected string $specialCharacters = self::SPECIAL_CHARACTERS,
         bool $allowWhitespace = false,
     ) {
         parent::__construct(
