@@ -12,6 +12,8 @@ use function trim;
 
 class PasswordRule extends AbstractRule
 {
+    public const SPECIAL_CHARACTERS = '+=-_!@#$%^&*()?<>{}[]"\'.,`~|\\/:;';
+
     public function __construct(
         protected ?int $minLength = null,
         protected ?int $maxLength = null,
@@ -20,7 +22,7 @@ class PasswordRule extends AbstractRule
         protected bool $requireLowerCaseCharacters = false,
         protected bool $requireUpperCaseCharacters = false,
         protected bool $requireSpecialCharacters = false,
-        protected string $specialCharacters = '+=-_!@#$%^&*()?<>{}[]"\'.,`~|\\/:;',
+        protected string $specialCharacters = static::SPECIAL_CHARACTERS,
         bool $allowWhitespace = false,
     ) {
         parent::__construct(

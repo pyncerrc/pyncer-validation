@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.2 - 2024-02-13
+
+### Added
+
+- Added SPECIAL\_CHARACTERS constant to PasswordRule.
+
 ## 1.2.1 - 2023-09-16
 
 ### Fixed
