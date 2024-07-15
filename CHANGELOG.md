@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.3 - 2024-07-15
+
+### Added
+
+- Added DateTime support to DateRule.
+
 ## 1.2.2 - 2024-02-13
 
 ### Added

@@ -356,6 +356,7 @@ class RuleTest extends TestCase
         );
 
         $this->assertTrue($rule->isValid(null));
+        $this->assertTrue($rule->isValid(new DateTime()));
         $this->assertTrue($rule->isValid(''));
         $this->assertFalse($rule->isValid([]));
         $this->assertFalse($rule->isValid(['a' => 'b']));

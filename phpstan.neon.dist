@@ -20,3 +20,11 @@ parameters:
             message: "#^Constant Pyncer\\\\DATE_TIME_FORMAT not found\\.$#"
             count: 2
             path: src/Rule/DateTimeRule.php
+        -
+            message: "#^Used constant Pyncer\\\\DATE_FORMAT not found\\.$#"
+            count: 1
+            path: src/Rule/DateRule.php
+        -
+            message: "#^Constant Pyncer\\\\DATE_FORMAT not found\\.$#"
+            count: 2
+            path: src/Rule/DateRule.php

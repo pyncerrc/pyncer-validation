@@ -1,13 +1,17 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
+use DateTimeInterface;
 use Pyncer\Validation\Rule\AbstractRule;
 use Stringable;
 
 use function preg_match;
 use function is_scalar;
+use function Pyncer\date_time as pyncer_date_time;
 use function strval;
 use function trim;
+
+use const Pyncer\DATE_FORMAT as PYNCER_DATE_FORMAT;
 
 class DateRule extends AbstractRule
 {
@@ -37,6 +41,10 @@ class DateRule extends AbstractRule
      */
     public function isValidValue(mixed $value): bool
     {
+        if ($value instanceof DateTimeInterface) {
+            return true;
+        }
+
         if (!is_scalar($value) && !$value instanceof Stringable) {
             return false;
         }
@@ -56,6 +64,10 @@ class DateRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if ($value instanceof DateTimeInterface) {
+            $value = $value->format(PYNCER_DATE_FORMAT);
+        }
+
         $value = trim(strval($value));
 
         if ($this->minValue !== null &&
@@ -78,20 +90,39 @@ class DateRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        $isDateTime = false;
+
+        if ($value instanceof DateTimeInterface) {
+            $isDateTime = true;
+            $value = $value->format(PYNCER_DATE_FORMAT);
+        }
+
         $value = parent::cleanConstraint($value);
 
         if (is_string($value)) {
             if ($this->minValue !== null &&
                 $this->compareDates($this->minValue, $value) > 0
             ) {
+                if ($isDateTime) {
+                    return pyncer_date_time($this->minValue);
+                }
+
                 return $this->minValue;
             }
 
             if ($this->maxValue !== null &&
                 $this->compareDates($this->maxValue, $value) < 0
             ) {
+                if ($isDateTime) {
+                    return pyncer_date_time($this->maxValue);
+                }
+
                 return $this->maxValue;
             }
+        }
+
+        if ($isDateTime) {
+            return pyncer_date_time($value);
         }
 
         return $value;
