@@ -15,6 +15,8 @@ use function trim;
 
 class FloatRule extends AbstractRule
 {
+    public const array EMPTY = [0, 0.0, '0', '0.0'];
+
     /**
      * @param null|float $minValue The minimum value a float can be.
      * @param null|float $maxValue The maximum value a float can be.
@@ -30,7 +32,7 @@ class FloatRule extends AbstractRule
         parent::__construct(
             allowNull: $allowNull,
             allowEmpty: $allowEmpty,
-            empty: 0.0,
+            empty: self::EMPTY,
         );
     }
 
@@ -83,10 +85,14 @@ class FloatRule extends AbstractRule
             $value = trim($value);
         }
 
+        if (!is_scalar($value)) {
+            return false;
+        }
+
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
-            if ($value === $this->empty) {
+            if (in_array($value, $this->empty, true)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -94,7 +100,7 @@ class FloatRule extends AbstractRule
         }
 
         if ($this->maxValue !== null && $value > $this->maxValue) {
-            if ($value === $this->empty) {
+            if (in_array($value, $this->empty, true)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -109,6 +115,12 @@ class FloatRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        $value = parent::cleanConstraint($value);
+
+        if (!is_scalar($value)) {
+            throw new InvalidArgumentException('Invalid value specified.');
+        }
+
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
@@ -125,22 +137,12 @@ class FloatRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    protected function isNull(mixed $value): bool
-    {
-        if (is_numeric($value) && floatval($value) === $this->empty) {
-            $value = $this->empty;
-        }
-
-        return parent::isNull($value);
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function isEmpty(mixed $value): bool
     {
-        if (is_numeric($value) && floatval($value) === $this->empty) {
-            $value = $this->empty;
+        if (is_numeric($value) &&
+            in_array(floatval($value), $this->empty, true)
+        ) {
+            $value = $this->empty[0];
         }
 
         return parent::isEmpty($value);

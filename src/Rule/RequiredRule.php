@@ -11,13 +11,24 @@ use function trim;
 
 class RequiredRule implements RuleInterface
 {
+    /** @var array<int, mixed> **/
+    protected array $empty;
+
     /**
+     * @param mixed $empty The value to use as an empty value.
      * @param bool $allowWhitespace When true, surrounding whitespace will
      *      be allowed.
      */
     public function __construct(
-        private bool $allowWhitespace = false,
-    ) {}
+        mixed $empty = '',
+        protected bool $allowWhitespace = false,
+    ) {
+        if (is_array($empty)) {
+            $this->empty = $empty;
+        } else {
+            $this->empty = [$empty];
+        }
+    }
 
     /**
      * @inheritdoc
@@ -42,6 +53,10 @@ class RequiredRule implements RuleInterface
 
         if (is_string($value) && !$this->allowWhitespace) {
             $value = trim($value);
+        }
+
+        if (in_array($value, $this->empty, true)) {
+            return false;
         }
 
         return (pyncer_nullify($value) !== null);

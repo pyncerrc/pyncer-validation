@@ -9,13 +9,24 @@ use function trim;
 
 class NullifyRule implements RuleInterface
 {
+    /** @var array<int, mixed> **/
+    protected array $empty;
+
     /**
+     * @param mixed $empty The value to use as an empty value.
      * @param bool $allowWhitespace When true, surrounding whitespace will
      *      be allowed.
      */
     public function __construct(
+        mixed $empty = '',
         private bool $allowWhitespace = false,
-    ) {}
+    ) {
+        if (is_array($empty)) {
+            $this->empty = $empty;
+        } else {
+            $this->empty = [$empty];
+        }
+    }
 
     /**
      * @inheritdoc
@@ -40,6 +51,10 @@ class NullifyRule implements RuleInterface
     {
         if (is_string($value) && !$this->allowWhitespace) {
             $value = trim($value);
+        }
+
+        if (in_array($value, $this->empty, true)) {
+            return null;
         }
 
         return pyncer_nullify($value);

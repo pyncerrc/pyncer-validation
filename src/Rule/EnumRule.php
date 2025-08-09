@@ -17,21 +17,36 @@ class EnumRule extends AbstractRule
      * @param array<int|string, mixed> $values An array of allowed values.
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
-     * @param string $empty The value to use as an empty value.
+     * @param mixed $empty The value to use as an empty value.
      */
     public function __construct(
-        private array $values,
+        protected array $values,
         bool $allowNull = false,
         bool $allowEmpty = false,
-        string $empty = '',
+        mixed $empty = '',
     ) {
         if (in_array(null, $values, true) ||
-            in_array('', $values, true) ||
-            in_array($empty, $values, true)
+            in_array('', $values, true)
         ) {
             throw new InvalidArgumentException(
                 'Values cannot contain null or an empty value.'
             );
+        }
+
+        if (is_array($empty)) {
+            foreach ($empty as $value) {
+                if (in_array($value, $values, true)) {
+                    throw new InvalidArgumentException(
+                        'Values cannot contain null or an empty value.'
+                    );
+                }
+            }
+        } else {
+            if (in_array($empty, $values, true)) {
+                throw new InvalidArgumentException(
+                    'Values cannot contain null or an empty value.'
+                );
+            }
         }
 
         parent::__construct(

@@ -11,17 +11,10 @@ use function trim;
 
 class Base64IdRule extends AbstractRule
 {
-    /**
-     * @param bool $allowNull When true, null vlaues are valid.
-     * @param bool $allowEmpty When true, empty values are valid.
-     */
-    public function __construct(
-        bool $allowNull = false,
-        bool $allowEmpty = false,
-    ) {
+    public function __construct() {
         parent::__construct(
-            allowNull: $allowNull,
-            allowEmpty: $allowEmpty,
+            allowNull: true,
+            allowEmpty: true,
         );
     }
 

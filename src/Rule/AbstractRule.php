@@ -10,6 +10,9 @@ use function trim;
 
 abstract class AbstractRule implements RuleInterface
 {
+    /** @var array<int, mixed> **/
+    protected array $empty;
+
     /**
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
@@ -20,9 +23,15 @@ abstract class AbstractRule implements RuleInterface
     public function __construct(
         protected bool $allowNull = false,
         protected bool $allowEmpty = false,
-        protected mixed $empty = '',
+        mixed $empty = '',
         protected bool $allowWhitespace = false,
-    ) {}
+    ) {
+        if (is_array($empty)) {
+            $this->empty = $empty;
+        } else {
+            $this->empty = [$empty];
+        }
+    }
 
     /**
      * @inheritdoc
@@ -105,7 +114,7 @@ abstract class AbstractRule implements RuleInterface
             }
 
             if ($this->allowEmpty) {
-                return $this->empty;
+                return $this->empty[0];
             }
 
             return '';
@@ -113,7 +122,7 @@ abstract class AbstractRule implements RuleInterface
 
         if ($this->isEmpty($value)) {
             if ($this->allowEmpty) {
-                return $this->empty;
+                return $this->empty[0];
             }
 
             if ($this->allowNull) {
@@ -129,7 +138,7 @@ abstract class AbstractRule implements RuleInterface
             }
 
             if ($this->allowEmpty) {
-                return $this->empty;
+                return $this->empty[0];
             }
 
             return '';
@@ -204,7 +213,11 @@ abstract class AbstractRule implements RuleInterface
             return false;
         }
 
-        if ($value === '' || $value === $this->empty || $value === null) {
+        if ($value === '' || $value === null) {
+            return true;
+        }
+
+        if (in_array($value, $this->empty, true)) {
             return true;
         }
 

@@ -169,53 +169,7 @@ class RuleTest extends TestCase
     }
     public function testBase64IdRule(): void
     {
-        $rule = new \Pyncer\Validation\Rule\Base64IdRule(
-            allowNull: false,
-            allowEmpty: false,
-        );
-
-        $this->assertTrue($rule->isValid('09aZ-_'));
-        $this->assertTrue($rule->isValid(' 09aZ-_ '));
-        $this->assertFalse($rule->isValid('09aZ='));
-        $this->assertFalse($rule->isValid(null));
-        $this->assertEquals($rule->clean(null), '');
-        $this->assertFalse($rule->isValid([]));
-        $this->assertFalse($rule->isValid(''));
-        $this->assertEquals($rule->clean(''), '');
-        $this->assertEquals($rule->clean(' '), '');
-
-        $rule = new \Pyncer\Validation\Rule\Base64IdRule(
-            allowNull: true,
-            allowEmpty: false,
-        );
-
-        $this->assertTrue($rule->isValid('09aZ-_'));
-        $this->assertTrue($rule->isValid(' 09aZ-_ '));
-        $this->assertTrue($rule->isValid(null));
-        $this->assertEquals($rule->clean(null), null);
-        $this->assertFalse($rule->isValid([]));
-        $this->assertTrue($rule->isValid(''));
-        $this->assertEquals($rule->clean(''), null);
-        $this->assertEquals($rule->clean(' '), null);
-
-        $rule = new \Pyncer\Validation\Rule\Base64IdRule(
-            allowNull: false,
-            allowEmpty: true,
-        );
-
-        $this->assertTrue($rule->isValid('09aZ-_'));
-        $this->assertTrue($rule->isValid(' 09aZ-_ '));
-        $this->assertTrue($rule->isValid(null));
-        $this->assertEquals($rule->clean(null), '');
-        $this->assertFalse($rule->isValid([]));
-        $this->assertTrue($rule->isValid(''));
-        $this->assertEquals($rule->clean(''), '');
-        $this->assertEquals($rule->clean(' '), '');
-
-        $rule = new \Pyncer\Validation\Rule\Base64IdRule(
-            allowNull: true,
-            allowEmpty: true,
-        );
+        $rule = new \Pyncer\Validation\Rule\Base64IdRule();
 
         $this->assertTrue($rule->isValid('09aZ-_'));
         $this->assertTrue($rule->isValid(' 09aZ-_ '));
@@ -696,30 +650,6 @@ class RuleTest extends TestCase
 
         $rule = new \Pyncer\Validation\Rule\IdRule(
             mapper: $mockMapper,
-            allowNull: false,
-            allowEmpty: false,
-        );
-
-        $this->assertTrue($rule->isValid(1));
-        $this->assertTrue($rule->isValid(2));
-        $this->assertFalse($rule->isValid(0));
-        $this->assertFalse($rule->isValid(null));
-        $this->assertFalse($rule->isValid(''));
-        $this->assertFalse($rule->isValid(' '));
-        $this->assertFalse($rule->isValid('test'));
-        $this->assertFalse($rule->isValid([]));
-        $this->assertFalse($rule->isValid(['a' => 'b']));
-
-        $this->assertEquals($rule->clean(0), '');
-        $this->assertEquals($rule->clean(null), '');
-        $this->assertEquals($rule->clean(''), '');
-        $this->assertEquals($rule->clean(' '), '');
-        $this->assertEquals($rule->clean('test'), '');
-
-        $rule = new \Pyncer\Validation\Rule\IdRule(
-            mapper: $mockMapper,
-            allowNull: true,
-            allowEmpty: true,
         );
 
         $this->assertTrue($rule->isValid(1));
@@ -1175,59 +1105,6 @@ class RuleTest extends TestCase
     public function testUidRule(): void
     {
         $rule = new \Pyncer\Validation\Rule\UidRule(
-            allowNull: false,
-            allowEmpty: false,
-            empty: '00000000-0000-0000-0000-000000000000',
-        );
-
-        $this->assertFalse($rule->isValid(null));
-        $this->assertFalse($rule->isValid(''));
-        $this->assertFalse($rule->isValid([]));
-        $this->assertFalse($rule->isValid(['a' => 'b']));
-        $this->assertFalse($rule->isValid('00000000-0000-0000-0000-000000000000'));
-        $this->assertTrue($rule->isValid('adda5eb3-f98d-4eff-9ea6-ad2ff15473cc'));
-        $this->assertEquals($rule->clean(null), '');
-        $this->assertEquals($rule->clean(''), '');
-        $this->assertEquals($rule->clean(' '), '');
-        $this->assertEquals($rule->clean('00000000-0000-0000-0000-000000000000'), '');
-
-        $rule = new \Pyncer\Validation\Rule\UidRule(
-            allowNull: true,
-            allowEmpty: false,
-            empty: '00000000-0000-0000-0000-000000000000',
-        );
-
-        $this->assertTrue($rule->isValid(null));
-        $this->assertTrue($rule->isValid(''));
-        $this->assertFalse($rule->isValid([]));
-        $this->assertFalse($rule->isValid(['a' => 'b']));
-        $this->assertTrue($rule->isValid('00000000-0000-0000-0000-000000000000'));
-        $this->assertTrue($rule->isValid('adda5eb3-f98d-4eff-9ea6-ad2ff15473cc'));
-        $this->assertEquals($rule->clean(null), null);
-        $this->assertEquals($rule->clean(''), null);
-        $this->assertEquals($rule->clean(' '), null);
-        $this->assertEquals($rule->clean('00000000-0000-0000-0000-000000000000'), null);
-
-        $rule = new \Pyncer\Validation\Rule\UidRule(
-            allowNull: false,
-            allowEmpty: true,
-            empty: '00000000-0000-0000-0000-000000000000',
-        );
-
-        $this->assertTrue($rule->isValid(null));
-        $this->assertTrue($rule->isValid(''));
-        $this->assertFalse($rule->isValid([]));
-        $this->assertFalse($rule->isValid(['a' => 'b']));
-        $this->assertTrue($rule->isValid('00000000-0000-0000-0000-000000000000'));
-        $this->assertTrue($rule->isValid('adda5eb3-f98d-4eff-9ea6-ad2ff15473cc'));
-        $this->assertEquals($rule->clean(null), '00000000-0000-0000-0000-000000000000');
-        $this->assertEquals($rule->clean(''), '00000000-0000-0000-0000-000000000000');
-        $this->assertEquals($rule->clean(' '), '00000000-0000-0000-0000-000000000000');
-        $this->assertEquals($rule->clean('00000000-0000-0000-0000-000000000000'), '00000000-0000-0000-0000-000000000000');
-
-        $rule = new \Pyncer\Validation\Rule\UidRule(
-            allowNull: true,
-            allowEmpty: true,
             empty: 'any time',
         );
 

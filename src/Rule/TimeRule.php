@@ -13,19 +13,21 @@ use function trim;
 // TODO: Support milliseconds
 class TimeRule extends AbstractRule
 {
+    public const string EMPTY = '00:00:00';
+
     /**
      * @param null|string $minValue The minimum value a time string can be.
      * @param null|string $maxValue The maximum value a time string can be.
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
-     * @param string $empty The value to use as an empty value.
+     * @param mixed $empty The value to use as an empty value.
      */
     public function __construct(
         private ?string $minValue = null,
         private ?string $maxValue = null,
         bool $allowNull = false,
         bool $allowEmpty = false,
-        string $empty = '00:00:00',
+        mixed $empty = self::EMPTY,
     ) {
         parent::__construct(
             allowNull: $allowNull,
@@ -55,6 +57,10 @@ class TimeRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
         $value = trim(strval($value));
 
         if ($this->minValue !== null &&

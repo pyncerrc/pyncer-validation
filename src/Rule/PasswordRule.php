@@ -53,6 +53,10 @@ class PasswordRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
         $value = strval($value);
 
         if (!$this->allowWhitespace) {
@@ -106,6 +110,10 @@ class PasswordRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            $value = '';
+        }
+
         $value = strval($value);
 
         if (!$this->allowWhitespace) {

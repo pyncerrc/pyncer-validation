@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
+use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\AbstractRule;
 use Stringable;
 
@@ -55,6 +56,10 @@ class StringRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
         $value = strval($value);
 
         if (!$this->allowWhitespace) {
@@ -77,10 +82,17 @@ class StringRule extends AbstractRule
      */
     public function cleanConstraint(mixed $value): mixed
     {
+        $value = parent::cleanConstraint($value);
+
+        if (!is_scalar($value)) {
+            throw new InvalidArgumentException('Invalid value specified.');
+        }
+
         $value = strval($value);
 
-        /** @var string */
-        $value = parent::cleanConstraint($value);
+        if (!$this->allowWhitespace) {
+            $value = trim($value);
+        }
 
         if ($this->maxLength !== null && pyncer_str_len($value) > $this->maxLength) {
             return pyncer_str_sub($value, 0, $this->maxLength);

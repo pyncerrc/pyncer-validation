@@ -41,6 +41,10 @@ class EmailRule extends AbstractRule
      */
     protected function isValidConstraint(mixed $value): bool
     {
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
         $value = trim(strval($value));
 
         if (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) {

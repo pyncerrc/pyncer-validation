@@ -2,6 +2,7 @@
 namespace Pyncer\Validation\Rule;
 
 use DateTimeInterface;
+use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\AbstractRule;
 use Stringable;
 
@@ -16,19 +17,21 @@ use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
 // TODO: Support milliseconds.
 class DateTimeRule extends AbstractRule
 {
+    public const string EMPTY = '0000-00-00 00:00:00';
+
     /**
      * @param null|string $minValue The minimum value a date time string can be.
      * @param null|string $maxValue The maximum value a date time string can be.
      * @param bool $allowNull When true, null vlaues are valid.
      * @param bool $allowEmpty When true, empty values are valid.
-     * @param string $empty The value to use as an empty value.
+     * @param mixed $empty The value to use as an empty value.
      */
     public function __construct(
         private ?string $minValue = null,
         private ?string $maxValue = null,
         bool $allowNull = false,
         bool $allowEmpty = false,
-        string $empty = '0000-00-00 00:00:00',
+        mixed $empty = self::EMPTY,
     ) {
         parent::__construct(
             allowNull: $allowNull,
@@ -69,6 +72,10 @@ class DateTimeRule extends AbstractRule
             $value = $value->format(PYNCER_DATE_TIME_FORMAT);
         }
 
+        if (!is_scalar($value) && !$value instanceof Stringable) {
+            return false;
+        }
+
         $value = trim(strval($value));
 
         if ($this->minValue !== null &&
@@ -99,6 +106,10 @@ class DateTimeRule extends AbstractRule
         }
 
         $value = parent::cleanConstraint($value);
+
+        if (!is_scalar($value)) {
+            throw new InvalidArgumentException('Invalid value specified.');
+        }
 
         if (is_string($value)) {
             if ($this->minValue !== null &&

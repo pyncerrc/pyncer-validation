@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.3.0 - Unreleased
+
+### Added
+
+- Added empty parameter to NullifyRule and RequiredRule class constructors.
+
+### Changed
+
+- IdRule has been separated form int rule.
+- The allowNull and allowEmpty parameters have been removed from the Base64IdRule and UidRule class constructor.
+
 ## 1.2.3 - 2024-07-15
 
 ### Added

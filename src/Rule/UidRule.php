@@ -11,19 +11,17 @@ use function trim;
 
 class UidRule extends AbstractRule
 {
+    public const string EMPTY = '00000000-0000-0000-0000-000000000000';
+
     /**
-     * @param bool $allowNull When true, null vlaues are valid.
-     * @param bool $allowEmpty When true, empty values are valid.
-     * @param string $empty The value to use as an empty value.
+     * @param mixed $empty The value to use as an empty value.
      */
     public function __construct(
-        bool $allowNull = false,
-        bool $allowEmpty = false,
-        string $empty = '00000000-0000-0000-0000-000000000000',
+        mixed $empty = self::EMPTY,
     ) {
         parent::__construct(
-            allowNull: $allowNull,
-            allowEmpty: $allowEmpty,
+            allowNull: true,
+            allowEmpty: true,
             empty: $empty,
         );
     }
@@ -39,6 +37,8 @@ class UidRule extends AbstractRule
 
         $value = trim(strval($value));
 
+        // Should an empty value be different from the default,
+        // still don't allow all zeros.
         if ($value === '00000000-0000-0000-0000-000000000000') {
             return false;
         }
