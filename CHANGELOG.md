@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.1 - Unreleased
+
+### Added
+
+- Addded default value constants for alias, password, and phone rules.
+
 ## 1.3.0 - 2025-08-09
 
 ### Added
