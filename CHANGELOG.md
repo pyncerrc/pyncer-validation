@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.3.2 - Unreleased
+
+### Fixed
+
+- Fixed value not being cleaned between validation checks when multiple rules specified.
+
+### Changed
+
+- The DataValidator getErrors() method will now set the error to 'invalid' if a rule's getError() method returns null.
+- The ValueValidator getError() method will now return 'invalid' if a rule's getError() method returns null.
+
 ## 1.3.1 - 2025-10-30
 
 ### Added

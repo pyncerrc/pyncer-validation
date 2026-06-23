@@ -185,12 +185,11 @@ class DataValidator
 
             foreach ($this->rules[$key] as $rule) {
                 if (!$rule->isValid($value)) {
-                    $error = $rule->getError();
-                    if ($error !== null) {
-                        $errors[$key] = $error;
-                        break;
-                    }
+                    $errors[$key] = $rule->getError() ?? 'invalid';
+                    break;
                 }
+
+                $value = $rule->clean($value);
             }
         }
 

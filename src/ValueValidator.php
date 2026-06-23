@@ -76,8 +76,10 @@ class ValueValidator
     {
         foreach ($this->rules as $rule) {
             if (!$rule->isValid($value)) {
-                return $rule->getError();
+                return $rule->getError() ?? 'invalid';
             }
+
+            $value = $rule->clean($value);
         }
 
         return null;
