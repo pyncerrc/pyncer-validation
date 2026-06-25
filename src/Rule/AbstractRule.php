@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
+use Closure;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Validation\Rule\RuleInterface;
 use Stringable;
@@ -113,7 +114,9 @@ abstract class AbstractRule implements RuleInterface
                 return null;
             }
 
-            if ($this->allowEmpty) {
+            if ($this->allowEmpty &&
+                !($this->empty[0] instanceof Closure)
+            ) {
                 return $this->empty[0];
             }
 
@@ -122,7 +125,11 @@ abstract class AbstractRule implements RuleInterface
 
         if ($this->isEmpty($value)) {
             if ($this->allowEmpty) {
-                return $this->empty[0];
+                if (!($this->empty[0] instanceof Closure)) {
+                    return $this->empty[0];
+                } else {
+                    return '';
+                }
             }
 
             if ($this->allowNull) {
@@ -137,7 +144,9 @@ abstract class AbstractRule implements RuleInterface
                 return null;
             }
 
-            if ($this->allowEmpty) {
+            if ($this->allowEmpty &&
+                !($this->empty[0] instanceof Closure)
+            ) {
                 return $this->empty[0];
             }
 
@@ -153,7 +162,7 @@ abstract class AbstractRule implements RuleInterface
      * @param mixed $value The value to clean.
      * @return mixed The cleaned value.
      */
-    public function cleanConstraint(mixed $value): mixed
+    protected function cleanConstraint(mixed $value): mixed
     {
         if ($value instanceof Stringable) {
             $value = strval($value);
@@ -217,8 +226,23 @@ abstract class AbstractRule implements RuleInterface
             return true;
         }
 
-        if (in_array($value, $this->empty, true)) {
+        if ($this->isEmptyValue($value)) {
             return true;
+        }
+
+        return false;
+    }
+
+    protected function isEmptyValue(mixed $value): bool
+    {
+        foreach ($this->empty as $emptyValue) {
+            if ($emptyValue instanceof Closure) {
+                if (call_user_func($emptyValue, $value)) {
+                    return true;
+                }
+            } elseif ($emptyValue === $value) {
+                return true;
+            }
         }
 
         return false;

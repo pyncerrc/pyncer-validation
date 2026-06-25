@@ -91,7 +91,7 @@ class PhoneRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    public function cleanConstraint(mixed $value): mixed
+    protected function cleanConstraint(mixed $value): mixed
     {
         $value = parent::cleanConstraint($value);
 

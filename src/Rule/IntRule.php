@@ -97,7 +97,7 @@ class IntRule extends AbstractRule
         $value = intval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
-            if (in_array($value, $this->empty, true)) {
+            if ($this->isEmptyValue($value)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -105,7 +105,7 @@ class IntRule extends AbstractRule
         }
 
         if ($this->maxValue !== null && $value > $this->maxValue) {
-            if (in_array($value, $this->empty, true)) {
+            if ($this->isEmptyValue($value)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -118,7 +118,7 @@ class IntRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    public function cleanConstraint(mixed $value): mixed
+    protected function cleanConstraint(mixed $value): mixed
     {
         $value = parent::cleanConstraint($value);
 
@@ -145,9 +145,9 @@ class IntRule extends AbstractRule
     protected function isEmpty(mixed $value): bool
     {
         if (is_numeric($value) &&
-            in_array(intval($value), $this->empty, true)
+            $this->isEmptyValue(intval($value))
         ) {
-            $value = $this->empty[0];
+            $value = 0;
         }
 
         return parent::isEmpty($value);

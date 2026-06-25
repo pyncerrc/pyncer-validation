@@ -108,7 +108,7 @@ class PasswordRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    public function cleanConstraint(mixed $value): mixed
+    protected function cleanConstraint(mixed $value): mixed
     {
         if (!is_scalar($value) && !$value instanceof Stringable) {
             $value = '';

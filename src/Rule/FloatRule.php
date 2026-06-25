@@ -92,7 +92,7 @@ class FloatRule extends AbstractRule
         $value = floatval($value);
 
         if ($this->minValue !== null && $value < $this->minValue) {
-            if (in_array($value, $this->empty, true)) {
+            if ($this->isEmptyValue($value)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -100,7 +100,7 @@ class FloatRule extends AbstractRule
         }
 
         if ($this->maxValue !== null && $value > $this->maxValue) {
-            if (in_array($value, $this->empty, true)) {
+            if ($this->isEmptyValue($value)) {
                 return ($this->allowNull || $this->allowEmpty);
             }
 
@@ -113,7 +113,7 @@ class FloatRule extends AbstractRule
     /**
      * @inheritdoc
      */
-    public function cleanConstraint(mixed $value): mixed
+    protected function cleanConstraint(mixed $value): mixed
     {
         $value = parent::cleanConstraint($value);
 
@@ -140,9 +140,9 @@ class FloatRule extends AbstractRule
     protected function isEmpty(mixed $value): bool
     {
         if (is_numeric($value) &&
-            in_array(floatval($value), $this->empty, true)
+            $this->isEmptyValue(floatval($value))
         ) {
-            $value = $this->empty[0];
+            $value = 0.0;
         }
 
         return parent::isEmpty($value);

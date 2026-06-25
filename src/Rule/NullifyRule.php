@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Validation\Rule;
 
+use Closure;
 use Pyncer\Validation\Rule\RuleInterface;
 
 use function is_string;
@@ -53,7 +54,7 @@ class NullifyRule implements RuleInterface
             $value = trim($value);
         }
 
-        if (in_array($value, $this->empty, true)) {
+        if ($this->isEmptyValue($value)) {
             return null;
         }
 
@@ -82,5 +83,20 @@ class NullifyRule implements RuleInterface
     public function getError(): ?string
     {
         return null;
+    }
+
+    protected function isEmptyValue(mixed $value): bool
+    {
+        foreach ($this->empty as $emptyValue) {
+            if ($emptyValue instanceof Closure) {
+                if (call_user_func($emptyValue, $value)) {
+                    return true;
+                }
+            } elseif ($emptyValue === $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

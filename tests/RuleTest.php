@@ -333,6 +333,30 @@ class RuleTest extends TestCase
         $this->assertTrue($rule->isValid('2023-01-31'));
         $this->assertFalse($rule->isValid('2022-12-31'));
         $this->assertFalse($rule->isValid('2023-02-01'));
+
+        $rule = new \Pyncer\Validation\Rule\DateRule(
+            allowNull: true,
+            allowEmpty: true,
+            empty: function(mixed $value) {
+                return true;
+            },
+        );
+
+        $this->assertTrue($rule->isValid('2023-01-01'));
+        $this->assertTrue($rule->isValid('2023-01-21'));
+        $this->assertEquals($rule->clean(null), null);
+        $this->assertEquals($rule->clean('2023-01-22'), '');
+
+        $rule = new \Pyncer\Validation\Rule\DateRule(
+            empty: function(mixed $value) {
+                return true;
+            },
+        );
+
+        $this->assertFalse($rule->isValid('2023-01-01'));
+        $this->assertFalse($rule->isValid('2023-01-21'));
+        $this->assertEquals($rule->clean(null), null);
+        $this->assertEquals($rule->clean('2023-01-22'), '');
     }
 
     public function testDateTimeRule(): void
@@ -832,6 +856,13 @@ class RuleTest extends TestCase
             allowWhitespace: true,
         );
         $this->assertEquals($rule->clean(' '), ' ');
+
+        $rule = new \Pyncer\Validation\Rule\NullifyRule(
+            empty: function(mixed $value) {
+                return true;
+            },
+        );
+        $this->assertEquals($rule->clean('a'), null);
     }
 
     public function testPasswordRule(): void
@@ -926,6 +957,14 @@ class RuleTest extends TestCase
         $this->assertFalse($rule->isValid(null));
         $this->assertFalse($rule->isValid(false));
         $this->assertFalse($rule->isValid([]));
+
+        $rule = new \Pyncer\Validation\Rule\RequiredRule(
+            empty: function(mixed $value) {
+                return true;
+            },
+        );
+
+        $this->assertFalse($rule->isValid('a'));
     }
 
     public function testStringRule(): void

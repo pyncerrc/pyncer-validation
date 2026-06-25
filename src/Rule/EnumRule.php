@@ -33,27 +33,19 @@ class EnumRule extends AbstractRule
             );
         }
 
-        if (is_array($empty)) {
-            foreach ($empty as $value) {
-                if (in_array($value, $values, true)) {
-                    throw new InvalidArgumentException(
-                        'Values cannot contain null or an empty value.'
-                    );
-                }
-            }
-        } else {
-            if (in_array($empty, $values, true)) {
-                throw new InvalidArgumentException(
-                    'Values cannot contain null or an empty value.'
-                );
-            }
-        }
-
         parent::__construct(
             allowNull: $allowNull,
             allowEmpty: $allowEmpty,
             empty: $empty,
         );
+
+        foreach ($values as $value) {
+            if ($this->isEmptyValue($value)) {
+                throw new InvalidArgumentException(
+                    'Values cannot contain null or an empty value.'
+                );
+            }
+        }
     }
 
     /**

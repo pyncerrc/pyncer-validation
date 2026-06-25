@@ -5,9 +5,11 @@
 ### Fixed
 
 - Fixed value not being cleaned between validation checks when multiple rules specified.
+- Fixed cleanConstraint() method being public instead of protected.
 
 ### Changed
 
+- Rules now accept Closure values for the empty parameter.
 - The DataValidator getErrors() method will now set the error to 'invalid' if a rule's getError() method returns null.
 - The ValueValidator getError() method will now return 'invalid' if a rule's getError() method returns null.
 
