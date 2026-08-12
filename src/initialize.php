@@ -21,6 +21,8 @@ Initializer::define('Pyncer\Validation\PASSWORD_REQUIRE_SPECIAL_CHARACTERS', fal
 Initializer::define('Pyncer\Validation\PASSWORD_SPECIAL_CHARACTERS', PasswordRule::SPECIAL_CHARACTERS);
 Initializer::define('Pyncer\Validation\PASSWORD_ALLOW_WHITESPACE', false);
 
+Initializer::define('Pyncer\Validation\EMAIL_ALLOW_UPPERCASE', false);
+
 Initializer::define('Pyncer\Validation\PHONE_ALLOW_E164', true);
 Initializer::define('Pyncer\Validation\PHONE_ALLOW_NANP', false);
 Initializer::define('Pyncer\Validation\PHONE_ALLOW_FORMATTING', false);

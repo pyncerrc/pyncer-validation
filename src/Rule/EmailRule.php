@@ -12,8 +12,9 @@ use function trim;
 // TODO: Option to support 'name <name@example.com>' format.
 class EmailRule extends AbstractRule
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected bool $allowUppercase = false,
+    ) {
         parent::__construct(
             allowNull: true,
             allowEmpty: true,
@@ -52,5 +53,16 @@ class EmailRule extends AbstractRule
         }
 
         return false;
+    }
+
+    protected function cleanConstraint(mixed $value): mixed
+    {
+        $value = parent::cleanConstraint($value);
+
+        if (!$this->allowUppercase) {
+            $value = strtolower($value);
+        }
+
+        return $value;
     }
 }
