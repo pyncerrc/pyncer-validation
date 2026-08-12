@@ -1,6 +1,10 @@
 # Change Log
 
-## 1.3.2 - Unreleased
+## 1.4.0 - 2026-08-12
+
+### Added
+
+- Added allowUppercase option to email rule.
 
 ### Fixed
 
@@ -9,6 +13,7 @@
 
 ### Changed
 
+- Email rule now converts to lowercase on clean.
 - Rules now accept Closure values for the empty parameter.
 - The DataValidator getErrors() method will now set the error to 'invalid' if a rule's getError() method returns null.
 - The ValueValidator getError() method will now return 'invalid' if a rule's getError() method returns null.
